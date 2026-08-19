@@ -1,9 +1,9 @@
 # Lab 19: Production-Grade GraphRAG vs Flat RAG
 
-**AICB-K34 · Ngày 19 · Track 3: GraphRAG**  
-**Thời lượng:** 2h implement + 30 phút reflection & thuyết minh kỹ thuật  
-**Môi trường:** Google Colab (T4 GPU khuyến nghị) / Jupyter Notebook + Neo4j AuraDB  
-**Dữ liệu:** HackerNoon Tech Company News Data Dump (`HackerNoon/tech-company-news-data-dump`)  
+**AICB-K34 · Ngày 19 · Track 3: GraphRAG**
+**Thời lượng:** 2h implement + 30 phút reflection & thuyết minh kỹ thuật
+**Môi trường:** Google Colab (T4 GPU khuyến nghị) / Jupyter Notebook + Neo4j AuraDB
+**Dữ liệu:** HackerNoon Tech Company News Data Dump (`HackerNoon/tech-company-news-data-dump`)
 **Công cụ:** Học viên được dùng AI Coding Agent, nhưng phải tự thiết kế, kiểm thử, audit dữ liệu và bảo vệ kiến trúc.
 
 ---
@@ -39,20 +39,20 @@ Vector Embeddings + FAISS FlatIP                                                
                     (Factoid · Multi-hop · Cross-doc Reasoning)
 ```
 
-Xem **[ASSIGNMENT.md](ASSIGNMENT.md)** để biết chi tiết từng module, yêu cầu kỹ thuật và 10 câu hỏi thuyết minh.  
+Xem **[ASSIGNMENT.md](ASSIGNMENT.md)** để biết chi tiết từng module, yêu cầu kỹ thuật và 10 câu hỏi thuyết minh.
 Xem **[RUBRIC.md](RUBRIC.md)** để biết tiêu chí đánh giá và thang điểm (100 điểm + 10 bonus).
 
 ---
 
 ## 📋 Prerequisites
 
-| Dependency | Bắt buộc? | Dùng cho |
-|-----------|-----------|----------|
-| **Neo4j AuraDB** (hoặc Neo4j 5.x) | ✅ Có | Lưu trữ Knowledge Graph & Cypher traversal |
-| **Python 3.10+ / Colab** | ✅ Có | Môi trường thực thi Notebook |
-| `HF_TOKEN` | ✅ Có | Stream dataset từ Hugging Face (`HackerNoon`) |
-| `GROQ_API_KEY` | ✅ Có | Coreference, NER+RE Extraction, Seed Extraction, Generator |
-| `OPENAI_API_KEY` | ⚠️ Có thể thay thế | LLM-as-a-Judge (có thể cấu hình dùng Groq hoặc OpenAI) |
+| Dependency                               | Bắt buộc?             | Dùng cho                                                    |
+| ---------------------------------------- | ----------------------- | ------------------------------------------------------------ |
+| **Neo4j AuraDB** (hoặc Neo4j 5.x) | ✅ Có                  | Lưu trữ Knowledge Graph & Cypher traversal                 |
+| **Python 3.10+ / Colab**           | ✅ Có                  | Môi trường thực thi Notebook                             |
+| `HF_TOKEN`                             | ✅ Có                  | Stream dataset từ Hugging Face (`HackerNoon`)             |
+| `GROQ_API_KEY`                         | ✅ Có                  | Coreference, NER+RE Extraction, Seed Extraction, Generator   |
+| `OPENAI_API_KEY`                       | ⚠️ Có thể thay thế | LLM-as-a-Judge (có thể cấu hình dùng Groq hoặc OpenAI) |
 
 ### Cấu hình Secrets (Colab Secrets hoặc `.env`)
 
@@ -82,11 +82,13 @@ HF_TOKEN=hf_...                     # Hugging Face User Access Token
 ## ⚡ Quick Start
 
 ### Cách 1: Chạy trực tiếp trên Google Colab (Khuyến nghị)
+
 1. Mở file [`Day19_GraphRAG_vs_FlatRAG_Production_Lab_Guide.ipynb`](Day19_GraphRAG_vs_FlatRAG_Production_Lab_Guide.ipynb) trên Google Colab.
 2. Thêm các secret keys vào tab **Secrets (biểu tượng chiếc khóa 🔑)** trên Colab.
 3. Chạy từng section theo Timeline hướng dẫn.
 
 ### Cách 2: Chạy Local Notebook
+
 ```bash
 # 1. Cài đặt dependencies
 pip install -r requirements.txt
@@ -105,20 +107,21 @@ jupyter lab Day19_GraphRAG_vs_FlatRAG_Production_Lab_Guide.ipynb
 
 ## ⏳ Timeline (120 phút + 30 phút Thuyết minh)
 
-| Thời gian | Module | Trọng tâm kỹ thuật |
-|-----------|--------|-------------------|
-| **0:00–0:15** | **Phần 1: Setup & Preprocessing** | Stream HF data, exact dedup, text chunking, conservative coreference resolution |
-| **0:15–0:45** | **Phần 2: Triple Extraction & Neo4j Ingestion** | NER + RE với JSON mode, schema allowlist, Entity Resolution (Vector ANN + Lexical Guard), bulk insert `UNWIND` |
-| **0:45–1:15** | **Phần 3: Flat RAG & Hybrid GraphRAG** | FAISS Flat RAG index, Seed extraction, BFS graph traversal, Super-node mitigation (degree > 100 → cap 50) |
-| **1:15–1:45** | **Phần 4: Golden Eval & Benchmark** | Chạy 5+ Golden queries, LLM-as-a-Judge (1–5 scale), bảng so sánh Quality / Latency / Tokens |
-| **1:45–2:00** | **Phần 5: Failure Modes & Bonus** | Super-node check, Entity audit log, Bonus Global Search & Self-Correction |
-| **2:00–2:30** | **Reflection & Thuyết minh** | Trả lời 10 câu hỏi kỹ thuật + Lecture Mapping + Action Plan |
+| Thời gian           | Module                                                 | Trọng tâm kỹ thuật                                                                                           |
+| -------------------- | ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| **0:00–0:15** | **Phần 1: Setup & Preprocessing**               | Stream HF data, exact dedup, text chunking, conservative coreference resolution                                  |
+| **0:15–0:45** | **Phần 2: Triple Extraction & Neo4j Ingestion** | NER + RE với JSON mode, schema allowlist, Entity Resolution (Vector ANN + Lexical Guard), bulk insert`UNWIND` |
+| **0:45–1:15** | **Phần 3: Flat RAG & Hybrid GraphRAG**          | FAISS Flat RAG index, Seed extraction, BFS graph traversal, Super-node mitigation (degree > 100 → cap 50)       |
+| **1:15–1:45** | **Phần 4: Golden Eval & Benchmark**             | Chạy 5+ Golden queries, LLM-as-a-Judge (1–5 scale), bảng so sánh Quality / Latency / Tokens                  |
+| **1:45–2:00** | **Phần 5: Failure Modes & Bonus**               | Super-node check, Entity audit log, Bonus Global Search & Self-Correction                                        |
+| **2:00–2:30** | **Reflection & Thuyết minh**                    | Trả lời 10 câu hỏi kỹ thuật + Lecture Mapping + Action Plan                                                |
 
 ---
 
 ## 🛡️ Scale Guard (Quy tắc an toàn dữ liệu trong Lab)
 
 Trong thời lượng 2 giờ, để tránh cạn kiệt rate limit hoặc tràn bộ nhớ:
+
 - `LAB_MAX_ARTICLES = 1500` (Số bài báo tối đa)
 - `LAB_MAX_CHUNKS = 3000` (Số chunk văn bản tối đa)
 - `EXTRACTION_MAX_CHUNKS = 400` (Số chunk trích xuất đồ thị)
@@ -157,6 +160,7 @@ Day19-Track3-GraphRAG/
 ## 🚀 Deliverables (Bài nộp)
 
 Học viên commit và push lên GitHub cá nhân:
+
 1. `Day19_GraphRAG_vs_FlatRAG_Production_Lab_Guide.ipynb` (Notebook đã chạy đầy đủ output các cell).
 2. `outputs/graphrag_eval_results.csv` và `outputs/graphrag_vs_flatrag_summary.csv`.
 3. `reports/lab_report.md` (Điền đầy đủ 2 phần: Thuyết minh kỹ thuật & Suy ngẫm cá nhân).
